@@ -5,9 +5,13 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('intranet.urls')),  # Include the core app's URLs
-    path('api/', include('resources.urls'))
-]
+    path('api/', include('intranet.urls')), 
+    path('api/', include('resources.urls')),
+    path("api/", include('messenger.urls')),
+    
+    ]
+
+
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

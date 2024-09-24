@@ -13,7 +13,7 @@ urlpatterns = [
     path('auth/login/', LoginView.as_view(), name='login'),
     path('auth/logout/', LogoutView.as_view(), name='logout'),
     path('auth/profile/', UserProfileView.as_view(), name='profile'),
-    path('api/users/', UserListView.as_view(), name='user-list')
+    path('users/', UserListView.as_view(), name='user-list')
     # path('auth/', include('rest_framework.urls')),  # Login/Logout views
 
    
