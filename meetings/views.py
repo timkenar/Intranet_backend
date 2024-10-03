@@ -4,8 +4,8 @@ from django.shortcuts import render
 
 from rest_framework import viewsets
 # from rest_framework.permissions import IsAuthenticated
-from .models import Meeting, AgendaItem, Document
-from .serializers import MeetingSerializer, AgendaItemSerializer, DocumentSerializer
+from .models import Meeting, AgendaItem, Document, Annotation
+from .serializers import MeetingSerializer, AgendaItemSerializer, DocumentSerializer, AnnotationSerializer
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -46,3 +46,7 @@ def generate_boardpack(request, meeting_id):
             return response
     except Meeting.DoesNotExist:
         return Response({"error": "Meeting not found"}, status=404)
+    
+class AnnotationViewSet(viewsets.ModelViewSet):
+    queryset = Annotation.objects.all()
+    serializer_class = AnnotationSerializer

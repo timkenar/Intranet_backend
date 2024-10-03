@@ -30,3 +30,22 @@ class Document(models.Model):
 
     def __str__(self):
         return f"Document for {self.agenda_item}"
+    
+class Annotation(models.Model):
+    ANNOTATION_TYPES = [
+        ('highlight', 'Highlight'),
+        ('text', 'Text'),
+        ('freehand', 'Freehand'),
+        ('comment', 'Comment'),
+        ('underline', 'Underline'),
+    ]
+    
+    document = models.ForeignKey(Document, related_name='annotations', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='annotations', on_delete=models.CASCADE)
+    annotation_type = models.CharField(max_length=20, choices=ANNOTATION_TYPES)
+    coordinates = models.JSONField()  # Stores coordinates for highlights, freehand, and underline
+    text = models.TextField(blank=True, null=True)  # Stores the comment note or text if applicable
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.annotation_type.capitalize()} by {self.user.username} on {self.document}"

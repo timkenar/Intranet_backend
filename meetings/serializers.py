@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.core.mail import send_mail
 from django.conf import settings 
-from .models import Meeting, AgendaItem, Document
+from .models import Meeting, AgendaItem, Document, Annotation
 from django.contrib.auth.models import User
 
 class UserSerializer(serializers.ModelSerializer):
@@ -104,3 +104,8 @@ class MeetingSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         representation['invitees'] = UserSerializer(instance.invitees.all(), many=True).data
         return representation
+    
+class AnnotationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Annotation
+        fields = '__all__'
