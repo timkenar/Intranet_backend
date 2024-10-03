@@ -8,6 +8,7 @@ urlpatterns = [
     path('api/', include('intranet.urls')), 
     path('api/', include('resources.urls')),
     path("api/", include('messenger.urls')),
+    path('api/', include('meetings.urls')),
     
     ]
 
