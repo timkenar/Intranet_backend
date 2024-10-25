@@ -6,7 +6,7 @@ class FolderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Folder
-        fields = ['id', 'name', 'user', 'files']
+        fields = ['id', 'name', 'user_id', 'user', 'files']
 
 class FileSerializer(serializers.ModelSerializer):
     class Meta:
