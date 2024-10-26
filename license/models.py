@@ -23,6 +23,7 @@ class Subscription(models.Model):
     duration = models.PositiveIntegerField()  # Duration in days
     features = models.JSONField(default=list)  # Store feature flags as a list
     max_users = models.PositiveIntegerField()  # Max active users for this plan
+    allowed_apps = models.JSONField(default=list)
 
     def __str__(self):
         return self.name
