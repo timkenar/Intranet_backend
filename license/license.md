@@ -69,6 +69,17 @@ class Subscription(models.Model):
         ('essential', 'Essential'),
         ('premium', 'Premium'),
         ('ultimate', 'Ultimate'),
+
+    # List the applications that you want to include or restrict according to the license
+      APPLICATIONS = [
+        'intranet',
+        'messenger',
+        'resources',
+        'meetings',
+    ]
+
+
+
     ]
     name = models.CharField(max_length=255, choices=PLAN_CHOICES)
     price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -127,12 +138,6 @@ class LicenseAdmin(admin.ModelAdmin):
 2. **Define Subscription Plans**: Create various subscription plans based on your requirements.
 3. **Assign Licenses**: Assign licenses to user groups to enable access to features.
 4. **Monitor Access**: The middleware will restrict access to applications based on the assigned licenses.
-
-## Best Practices
-
-- Document your code and provide clear comments.
-- Write tests for models and views to ensure functionality.
-- Regularly review and update dependencies.
 
 ## License
 
