@@ -30,7 +30,13 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
-    'intranet', 'corsheaders','messenger', 'resources', 'meetings', 'license'
+    'intranet', 
+    'corsheaders',
+    'messenger', 
+    'resources',
+    'meetings',
+    'license',
+    'directory'
 ]
 
 MIDDLEWARE = [
