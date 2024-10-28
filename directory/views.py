@@ -15,7 +15,13 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = UserSerializer
     
     
+class CurrentUserViewSet(viewsets.ViewSet):
+    permission_classes = [permissions.IsAuthenticated]
 
+    def list(self, request):
+        user = request.user
+        serializer = UserSerializer(user)
+        return Response(serializer.data) 
     
 #Inviting New Users to the system 
 
