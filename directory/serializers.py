@@ -28,3 +28,6 @@ class UserInvitationSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         return validated_data  # Return all validated data for email processing
+    
+    
+    
