@@ -1,12 +1,17 @@
+import secrets
+import string
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.core.mail import send_mail
-
-from .utils import send_invitation_email  # Updated to use the utility function
 from .serializers import UserInvitationSerializer, UserSerializer
+from django.template.loader import render_to_string
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode
+
+
+
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
@@ -22,51 +27,16 @@ class CurrentUserViewSet(viewsets.ViewSet):
         return Response(serializer.data) 
     
 
-# class UserInvitationView(APIView):
-#     permission_classes = [permissions.IsAdminUser]
 
-#     def post(self, request):
-#         serializer = UserInvitationSerializer(data=request.data)
-#         if serializer.is_valid():
-#             data = serializer.save()
-#             first_name = data['first_name']
-#             last_name = data['last_name']
-#             email = data['email']
-#             role = data['role']
-
-#             # Generate an invitation link (customize the URL as needed)
-#             invitation_link = f"{settings.FRONTEND_URL}/invite?email={email}&role={role.id}"
-            
-#             # Send email invitation
-#             send_mail(
-#                 'You are invited to join the system',
-#                 f'Hi {first_name} {last_name},\n\n'
-#                 f'You have been invited to join our Boardmeets system. '
-#                 f'Please click the following link to create your account: {invitation_link}',
-#                 settings.DEFAULT_FROM_EMAIL,
-#                 [email],
-#                 fail_silently=False,
-#             )
-
-#             return Response({'message': 'Invitation sent successfully.'}, status=status.HTTP_201_CREATED)
-        
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    # Email Template
-    
-    
-from django.core.mail import send_mail
-from django.template.loader import render_to_string
-from django.conf import settings
-from rest_framework import permissions, status
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from .serializers import UserInvitationSerializer
-
-class UserInvitationView(APIView):
+class UserInvitationViewSet(viewsets.ViewSet):
     permission_classes = [permissions.IsAdminUser]
 
-    def post(self, request):
+    def generate_random_password(self):
+        """Generates a random, secure password."""
+        characters = string.ascii_letters + string.digits + string.punctuation
+        return ''.join(secrets.choice(characters) for i in range(12))  # 12-character password
+
+    def create(self, request):
         serializer = UserInvitationSerializer(data=request.data)
         if serializer.is_valid():
             data = serializer.save()
@@ -75,28 +45,47 @@ class UserInvitationView(APIView):
             email = data['email']
             role = data['role']
 
-            # Generate the invitation link (customize as needed)
-            invitation_link = f"{settings.FRONTEND_URL}/invite?email={email}&role={role.id}"
+            # Generate a random temporary password
+            temporary_password = self.generate_random_password()
+
+            # Create the user instance and set the temporary password
+            user = User.objects.create_user(
+                username=email,
+                email=email,
+                first_name=first_name,
+                last_name=last_name,
+                password=temporary_password,  
+            )
+            user.is_active = False  # Ensure user is inactive until they reset their password
+            user.save()
+
+            # Generate the password reset link
+            token = default_token_generator.make_token(user)
+            uid = urlsafe_base64_encode(str(user.pk).encode())  # No need to decode here
+            reset_link = f"{settings.FRONTEND_URL}/reset-password/{uid}/{token}/"  # Custom reset link
 
             # Render the email content using the template
             email_subject = 'You are invited to join the system'
+
+            # HTML Email Template rendering
             email_body = render_to_string(
                 'invitation_email.html',  # Path to the email template
                 {
                     'first_name': first_name,
                     'last_name': last_name,
                     'role': role.name,  # Assuming role has a 'name' attribute
-                    'invitation_link': invitation_link,
+                    'reset_link': reset_link,  # Pass the reset password link
+                    'temporary_password': temporary_password,  # Add the temporary password here
                 }
             )
 
-            # Send the email
+            # Send the email (both plain-text and HTML version)
             send_mail(
                 subject=email_subject,
-                message='',# HTML email body
+                message="",  # Plain text body, in case HTML is not supported by the client
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[email],
-                html_message=email_body,
+                html_message=email_body,  # This is the important change
                 fail_silently=False,
             )
 

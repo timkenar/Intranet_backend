@@ -48,6 +48,14 @@
         display: inline-block;
         margin: 20px 0;
       }
+      .temporary-password {
+        background-color: #f9f9f9;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-family: monospace;
+        font-weight: bold;
+      }
     </style>
   </head>
   <body>
@@ -66,10 +74,13 @@
           button below:
         </p>
         <p style="text-align: center">
-          <a href="{{ invitation_link }}" class="email-button"
+          <a href="{{ reset_link }}" class="email-button"
             >Complete Your Signup</a
           >
         </p>
+        <p>Your temporary password to log in is:</p>
+        <p class="temporary-password">{{ temporary_password }}</p>
+        <p>You can change it to a new password once you log in.</p>
         <p>If you did not request this invitation, please ignore this email.</p>
         <p>Thanks, <br />The Boardmeets Team</p>
       </div>
