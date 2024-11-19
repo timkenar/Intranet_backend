@@ -9,6 +9,10 @@ from .serializers import UserInvitationSerializer, UserSerializer
 from django.template.loader import render_to_string
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode
+from rest_framework.permissions import AllowAny
+from django.contrib.auth import get_user_model, update_session_auth_hash
+from django.utils.http import urlsafe_base64_decode
+from django.utils.translation import gettext_lazy as _
 
 
 
@@ -92,3 +96,35 @@ class UserInvitationViewSet(viewsets.ViewSet):
             return Response({'message': 'Invitation sent successfully.'}, status=status.HTTP_201_CREATED)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# Reset Password Code
+class ResetPasswordViewSet(viewsets.ViewSet):
+    permission_classes = [AllowAny] 
+
+    def reset_password(self, request, uidb64, token):
+        try:
+            # Decode the uid and get the user object
+            uid = urlsafe_base64_decode(uidb64).decode()
+            user = User.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            return Response({"detail": _("Invalid reset link.")}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check if the reset token is valid
+        if not default_token_generator.check_token(user, token):
+            return Response({"detail": _("Invalid or expired token.")}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Get the new password from the request data
+        new_password = request.data.get("new_password")
+        if not new_password:
+            return Response({"detail": _("New password is required.")}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Reset the user's password
+        user.set_password(new_password)
+        user.is_active = True  # Activate the user after password reset
+        user.save()
+
+        # Optionally, keep the user logged in after resetting the password
+        update_session_auth_hash(request, user)
+
+        return Response({"detail": _("Password has been reset successfully.")}, status=status.HTTP_200_OK)

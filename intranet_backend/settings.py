@@ -134,7 +134,7 @@ TEMPLATES = [
 ]
 
 
-FRONTEND_URL = 'https//:app.cosekeeboard.com'
+FRONTEND_URL = 'https://localhost:8000/api/directory'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
