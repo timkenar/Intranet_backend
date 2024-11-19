@@ -175,6 +175,8 @@ EMAIL_HOST_USER = 'kenartutors@gmail.com'
 EMAIL_HOST_PASSWORD = 'scaqkbyqhehzrskr'
 
 
+EMAIL_MESSAGE_CONTENT = 'html' 
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
