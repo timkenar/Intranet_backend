@@ -29,7 +29,7 @@ class Subscription(models.Model):
         return self.name
 
 
-class UserGroup(models.Model):
+class UserGroup(models.Model): 
     name = models.CharField(max_length=255)
     users = models.ManyToManyField(User, related_name='user_groups')
 

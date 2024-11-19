@@ -48,7 +48,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'license.middleware.application_access_middleware',
+    # 'license.middleware.application_access_middleware',
 ]
 
 ROOT_URLCONF = 'intranet_backend.urls'
@@ -115,6 +115,24 @@ DATABASES = {
 #         'PORT': '5432',
 #     }
 # }
+from pathlib import Path
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [Path(BASE_DIR) / 'templates'],  # Correct way to reference the 'templates' folder
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
 
 
 
