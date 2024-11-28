@@ -1,8 +1,9 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
+from simple_history.admin import SimpleHistoryAdmin
 
-from .models import Role, UserRole
+from .models import Role, UserRole, History
 
 from django import forms
 
@@ -27,8 +28,10 @@ class UserRoleInline(admin.TabularInline):
 class UserAdmin(BaseUserAdmin):
     inlines = (UserRoleInline,)
 
+class HistoryAdmin(SimpleHistoryAdmin):
+    list_display = ('name', 'description', 'created_at', 'updated_at')
 
 
 admin.site.register(Role)
-
 admin.site.register(UserRole)
+admin.site.register(History)

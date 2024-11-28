@@ -1,6 +1,6 @@
 from django.db import models
-
 from django.contrib.auth.models import User
+from simple_history.models import HistoricalRecords
 
 class Role(models.Model):
     ADMIN = 'admin'
@@ -29,3 +29,10 @@ class UserRole(models.Model):
         return f"{self.user.username} - {self.role.name}"
 
 
+
+class History(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    history = HistoricalRecords()

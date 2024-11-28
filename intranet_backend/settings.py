@@ -36,7 +36,8 @@ INSTALLED_APPS = [
     'resources',
     'meetings',
     'license',
-    'directory'
+    'directory',
+    'simple_history'
 ]
 
 MIDDLEWARE = [
@@ -120,7 +121,7 @@ from pathlib import Path
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [Path(BASE_DIR) / 'templates'],  # Correct way to reference the 'templates' folder
+        'DIRS': [Path(BASE_DIR) / 'templates'],  
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
