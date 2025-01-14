@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from simple_history.admin import SimpleHistoryAdmin
 
-from .models import Role, UserRole, History
+from .models import Role, UserRole, History, UserInvitation
 
 from django import forms
 
@@ -35,3 +35,4 @@ class HistoryAdmin(SimpleHistoryAdmin):
 admin.site.register(Role)
 admin.site.register(UserRole)
 admin.site.register(History)
+admin.site.register(UserInvitation)

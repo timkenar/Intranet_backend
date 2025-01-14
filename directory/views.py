@@ -31,7 +31,6 @@ class CurrentUserViewSet(viewsets.ViewSet):
         serializer = UserSerializer(user)
         return Response(serializer.data) 
     
-
 class UserInvitationViewSet(viewsets.ViewSet):
     permission_classes = [permissions.IsAdminUser]
 
@@ -54,7 +53,7 @@ class UserInvitationViewSet(viewsets.ViewSet):
 
             # Create the user instance and set the temporary password
             user = User.objects.create_user(
-                username=email,  # It's often a good practice to use the email as the username
+                username=email,  # Using the email as the username
                 email=email,
                 first_name=first_name,
                 last_name=last_name,
@@ -78,7 +77,7 @@ class UserInvitationViewSet(viewsets.ViewSet):
                 token=token,  # Store the token for future reference
             )
 
-            # Send the invitation email
+            # Now send the invitation email
             email_subject = 'You are invited to join the system'
             email_body = render_to_string(
                 'invitation_email.html',  # Path to the email template
@@ -91,18 +90,91 @@ class UserInvitationViewSet(viewsets.ViewSet):
                 }
             )
 
+            # Send email (both plain-text and HTML version)
             send_mail(
                 subject=email_subject,
                 message="",  # Plain text body, in case HTML is not supported by the client
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[email],
-                html_message=email_body,
+                html_message=email_body,  # HTML message is key here
                 fail_silently=False,
             )
 
             return Response({'message': 'Invitation sent successfully.'}, status=status.HTTP_201_CREATED)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# class UserInvitationViewSet(viewsets.ViewSet):
+#     permission_classes = [permissions.IsAdminUser]
+
+#     def generate_random_password(self):
+#         """Generates a random, secure password."""
+#         characters = string.ascii_letters + string.digits + string.punctuation
+#         return ''.join(secrets.choice(characters) for i in range(12))  # 12-character password
+
+#     def create(self, request):
+#         serializer = UserInvitationSerializer(data=request.data)
+#         if serializer.is_valid():
+#             data = serializer.save()
+#             first_name = data['first_name']
+#             last_name = data['last_name']
+#             email = data['email']
+#             role = data['role']
+
+#             # Generate a random temporary password
+#             temporary_password = self.generate_random_password()
+
+#             # Create the user instance and set the temporary password
+#             user = User.objects.create_user(
+#                 username=email,  # It's often a good practice to use the email as the username
+#                 email=email,
+#                 first_name=first_name,
+#                 last_name=last_name,
+#                 password=temporary_password,
+#             )
+#             user.is_active = False  # Ensure user is inactive until they reset their password
+#             user.save()
+
+#             # Generate the password reset link
+#             token = default_token_generator.make_token(user)
+#             uid = urlsafe_base64_encode(str(user.pk).encode())  # No need to decode here
+#             reset_link = f"{settings.FRONTEND_URL}/reset-password/{uid}/{token}/"  # Custom reset link
+
+#             # Create the invitation in the database
+#             invitation = UserInvitation.objects.create(
+#                 email=email,
+#                 first_name=first_name,
+#                 last_name=last_name,
+#                 role=role,
+#                 invited_by=request.user,  # The admin who invited the user
+#                 token=token,  # Store the token for future reference
+#             )
+
+#             # Send the invitation email
+#             email_subject = 'You are invited to join the system'
+#             email_body = render_to_string(
+#                 'invitation_email.html',  # Path to the email template
+#                 {
+#                     'first_name': first_name,
+#                     'last_name': last_name,
+#                     'role': role.name,  # Assuming role has a 'name' attribute
+#                     'reset_link': reset_link,  # Pass the reset password link
+#                     'temporary_password': temporary_password,  # Add the temporary password here
+#                 }
+#             )
+
+#             send_mail(
+#                 subject=email_subject,
+#                 message="",  # Plain text body, in case HTML is not supported by the client
+#                 from_email=settings.DEFAULT_FROM_EMAIL,
+#                 recipient_list=[email],
+#                 html_message=email_body,
+#                 fail_silently=False,
+#             )
+
+#             return Response({'message': 'Invitation sent successfully.'}, status=status.HTTP_201_CREATED)
+        
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
