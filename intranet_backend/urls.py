@@ -11,7 +11,7 @@ urlpatterns = [
     path("api/message/", include('messenger.urls')),
     path('api/meetings/', include('meetings.urls')),
     path('api/license/', include('license.urls')),
-    path('api/directory/', include('directory.urls'))
+    path('api/directory/', include('directory.urls')),
     
     ]
 
