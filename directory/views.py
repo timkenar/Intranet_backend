@@ -2,10 +2,14 @@ import secrets
 import string
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
-from django.contrib.auth.models import User,Group
+from .serializers import GroupSerializer
+from django.contrib.auth.models import User
+from .models import Group, UserGroup
+
+
 from django.conf import settings
 from django.core.mail import send_mail
-from .serializers import UserInvitationSerializer, UserSerializer, GroupSerializer
+from .serializers import UserInvitationSerializer, UserSerializer, GroupSerializer, UserGroupSerializer
 from django.template.loader import render_to_string
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode
@@ -37,6 +41,11 @@ class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = GroupSerializer
     permission_classes = [IsAuthenticated] 
     
+class UserGroupViewSet(viewsets.ModelViewSet):
+    queryset = UserGroup.objects.all()
+    serializer_class = UserGroupSerializer
+    permission_classes = [IsAuthenticated] 
+
     
 class UserInvitationViewSet(viewsets.ViewSet):
     permission_classes = [permissions.IsAdminUser]

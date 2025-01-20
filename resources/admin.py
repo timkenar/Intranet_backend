@@ -1,8 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Folder, File
+from .models import Resource
 
 
-admin.site.register(Folder)
-admin.site.register(File)
+admin.site.register(Resource)

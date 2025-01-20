@@ -1,12 +1,27 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
+import os
 
-class Folder(models.Model):
-    name = models.CharField(max_length=255)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+class Resource(models.Model):
+    RESOURCE_TYPE_CHOICES = [
+        ('folder', 'Folder'),
+        ('file', 'File'),
+    ]
 
-class File(models.Model):
     name = models.CharField(max_length=255)
-    file = models.FileField(upload_to='files/')
-    folder = models.ForeignKey(Folder, related_name='files', on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    resource_type = models.CharField(max_length=10, choices=RESOURCE_TYPE_CHOICES)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, related_name='children', null=True, blank=True)
+    owner = models.ForeignKey(User, related_name='resources', on_delete=models.CASCADE)
+    file = models.FileField(upload_to='resources/', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+    def get_full_path(self):
+        """
+        Recursively construct the full path of the folder or file.
+        """
+        if self.parent:
+            return os.path.join(self.parent.get_full_path(), self.name)
+        return self.name

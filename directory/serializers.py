@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User,Group
+from django.contrib.auth.models import Group, User
 
-from .models import UserRole, Role
+from .models import UserRole, Role, Group, UserGroup
 
 class UserRoleSerializer(serializers.ModelSerializer):
     role = serializers.CharField(source='role.name')
@@ -18,15 +18,28 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'username', 'email', 'first_name', 'last_name', 'roles' , 'group']
 
-
-from rest_framework import serializers
-
-
+#For group serializers
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
-        fields = ['id', 'name']
+        fields = ['id', 'description']
 
+
+class UserGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserGroup
+        fields = ['user', 'group', 'role']
+
+    def validate(self, data):
+        user = data.get('user')
+        role = data.get('role')
+
+        # Default to the user's system-level role if no role is provided
+        if not role:
+            system_role = user.system_role.role  # Retrieve the user's global/system role
+            data['role'] = system_role
+
+        return data
 
 # Invitation Serializer
 class UserInvitationSerializer(serializers.Serializer):

@@ -28,8 +28,28 @@ class UserRole(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.role.name}"
 
+#Created a custom group
+class Group(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    description = models.TextField(blank=True, null=True)
+    historical = HistoricalRecords()
+
+    def __str__(self):
+        return self.name
 
 
+class UserGroup(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_groups')
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='user_groups')
+    role = models.ForeignKey(Role, on_delete=models.CASCADE, related_name='user_group_roles')
+
+    class Meta:
+        unique_together = ('user', 'group')  # Ensure a user can only belong to a group once.
+
+    def __str__(self):
+        return f"{self.user.username} - {self.group.name} - {self.role.name}"
+
+#Roe audit trail
 class History(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
