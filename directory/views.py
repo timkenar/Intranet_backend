@@ -69,7 +69,7 @@ class UserInvitationViewSet(viewsets.ViewSet):
 
             # Create the user instance and set the temporary password
             user = User.objects.create_user(
-                username=email,  # Using the email as the username
+                username=last_name,  # Using the email as the username
                 email=email,
                 first_name=first_name,
                 last_name=last_name,

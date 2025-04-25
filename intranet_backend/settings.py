@@ -101,23 +101,23 @@ WSGI_APPLICATION = 'intranet_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'intranet',
-#         'USER': 'timo',
-#         'PASSWORD': 'kener',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'intranet',
+        'USER': 'timo',
+        'PASSWORD': 'kener',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
 from pathlib import Path
 
 TEMPLATES = [
@@ -177,6 +177,25 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'kenartutors@gmail.com'
 EMAIL_HOST_PASSWORD = 'scaqkbyqhehzrskr'
+
+# Kmtc SMTP DETAILS
+
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'eboard@kmtc.ac.ke'
+# EMAIL_HOST_PASSWORD = 'livkleivltnmdvnx'
+
+# New configurations email with noreply domain
+# Email configuration using SSL for port 465
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'mail.cosekeeboard.com'
+# EMAIL_PORT = 465
+# EMAIL_USE_SSL = True  # SSL should be True for port 465
+# EMAIL_HOST_USER = 'noreply@cosekeeboard.com'
+# EMAIL_HOST_PASSWORD = 'coseke@2025'  # Use the correct password for the email account
+# DEFAULT_FROM_EMAIL = 'noreply@cosekeeboard.com'
 
 
 EMAIL_MESSAGE_CONTENT = 'html' 
